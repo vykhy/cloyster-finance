@@ -1,5 +1,6 @@
 import { User } from '@firebase/auth'
-import { doc, setDoc, getDoc } from 'firebase/firestore'
+import { doc, setDoc, updateDoc, getDoc, arrayUnion } from 'firebase/firestore'
+import { Expense } from '../contexts/app-user-context'
 import { db } from '../lib/firebase'
 
 export async function userExists(uid: string){
@@ -25,4 +26,10 @@ export async function createUser(user: User){
 export async function getUserData(uid: string){
     const result = await getDoc(doc(db, "users", uid))
     return result.data()
+}
+
+export async function addExpense(uid: string, expense: Expense){
+    await updateDoc(doc(db,'users', uid), {
+        expenses: arrayUnion(expense)
+    })
 }

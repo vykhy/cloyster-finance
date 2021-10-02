@@ -8,7 +8,8 @@ import useAuthListener from './services/authListener';
 import firebase from './lib/firebase';
 import useUser from './services/useUser';
 import AppUserContext from './contexts/app-user-context';
-import Dashboard from './Dashboard';
+import Dashboard from './pages/Dashboard';
+import Expenses from './pages/Expenses';
 
 function App() {
 
@@ -25,6 +26,9 @@ function App() {
             <Switch >
               <Route path='/' exact>
                 <Dashboard />
+              </Route>
+              <Route path='/expense' exact>
+                <Expenses />
               </Route>
               <Route path='/sign-in' exact>
                 <SignIn />

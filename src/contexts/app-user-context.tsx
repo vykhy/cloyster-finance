@@ -5,17 +5,19 @@ export interface Sale{
     id: string;
     projectId: string;
     customer?: string;
+    weight?:number;
     amount: number;
-    reason?: Text;
-    createdAt: string;
+    reason: string;
+    createdAt: number;
     type?: string;
 }
 export interface Expense{
     id: string;
     projectId: string;
+    item?: string;
     amount: number;
-    reason?: Text;
-    createdAt: string;
+    reason: string;
+    createdAt: number;
     type?: string;
 }
 interface Project{
