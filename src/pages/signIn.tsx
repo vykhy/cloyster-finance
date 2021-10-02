@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { createUser, userExists } from '../services/firebase'
@@ -25,6 +25,7 @@ export default function SignIn(): any {
             const userDoc = async() => {
                 const exists= await userExists( user?.uid )
                 setdoc(exists)
+                console.log(doc)
                 if(!doc){
                     createUser(user)
                 }

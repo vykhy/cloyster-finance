@@ -1,6 +1,5 @@
-import { getAuth, onAuthStateChanged } from "@firebase/auth";
+import { getAuth, onAuthStateChanged, User } from "@firebase/auth";
 import React, { useState, useEffect } from 'react'
-import { User } from "../contexts/user-context";
 import firebase from "../lib/firebase";
 
 export default function useAuthListener(){
@@ -13,7 +12,6 @@ export default function useAuthListener(){
     useEffect(() => {
         const listener = onAuthStateChanged(auth, (authUser) => {
         if(authUser){
-            //console.log('signed in', user)
             localStorage.setItem('cloyster-finance-user', JSON.stringify(authUser))
             setUser(user)
         }
