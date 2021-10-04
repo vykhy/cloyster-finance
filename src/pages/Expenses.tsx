@@ -9,7 +9,7 @@ export default function Expenses() {
 
     const [projectId, setProjectId] = useState<string>('')
     const [item, setItem] = useState<string>('')
-    const [amount, setAmount] = useState<string>()
+    const [amount, setAmount] = useState<string | number>('0')
     const [reason, setReason] = useState<string>('')
     const [type, setType] = useState<string>('expense')
 
@@ -19,7 +19,7 @@ export default function Expenses() {
             id: 'adfs',
             projectId: projectId,
             item: item,
-            amount: 4000,
+            amount: +amount,
             reason: reason,
             type: type,
             createdAt: Date.now()
@@ -41,7 +41,7 @@ export default function Expenses() {
                     />
                 </label> <br />
                 <label>Price: <br />
-                    <input type="number" aria-label="amount" value={amount} onChange={(e) => setAmount(e.target.value)}
+                    <input type="number" aria-label="amount" value={amount} onChange={(e) => {setAmount(e.target.value)}}
                     />
                 </label>
                 <br />

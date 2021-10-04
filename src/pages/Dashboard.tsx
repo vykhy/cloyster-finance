@@ -63,6 +63,7 @@ export default function Dashboard() {
         return total + Math.round(num)
     }
 
+    console.log(expenses)
     return (
         <div>
             <h3>Expenses: {expenses.reduce(getSum, 0)} </h3>

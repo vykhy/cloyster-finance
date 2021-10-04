@@ -16,7 +16,6 @@ function App() {
   const firebaseapp = firebase
   const { user } = useAuthListener()
   const appUser = useUser(user?.uid || null)
-  console.log(appUser)
 
   return (
     <userContext.Provider value = { user } >
