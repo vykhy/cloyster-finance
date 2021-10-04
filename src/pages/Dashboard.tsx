@@ -13,10 +13,6 @@ export interface Transaction{
     createdAt: number;
     type?: string;
 }
-export function formatDate(time: number){
-    let date = new Date(time)
-    return date.getUTCFullYear()+'/'+date.getMonth()+'/'+date.getDate()
-}
 
 export default function Dashboard() {
 
@@ -32,6 +28,12 @@ export default function Dashboard() {
         setTransactions(user?.sales.concat(user.expenses))
     }, [user])
 
+    /**
+     * 
+     * @param period period for which to return data
+     * @param array input of items
+     * @param setFunction a usestate function to update corresponding state
+     */
     function setStats(period: string,
          array: Array<Transaction | Expense | SaleType> | undefined,
           setFunction: Function,
@@ -46,6 +48,11 @@ export default function Dashboard() {
             })
     }
 
+    /**
+     * returns a timestamp so that we can filter items for only after specified timestamp
+     * @param period duration for which to return timestamp
+     * @returns a timestamp value at various intervals based on period
+     */
     function getTimestamp(period: string){
         switch (period) {
             case '24 hours':
@@ -60,14 +67,29 @@ export default function Dashboard() {
                 return 0                            
         }
     }
+    /**
+     * to sum an array 
+     */
     function getSum(total: number, num: number){
         return total + Math.round(num)
+    }
+    /**
+     * 
+     * @param time millisecond timestamp value
+     * @returns formatted date (yyyy/mm/dd)
+     */
+    function formatDate(time: number){
+        let date = new Date(time)
+        return date.getUTCFullYear()+'/'+date.getMonth()+'/'+date.getDate()
     }
 
     return (
         <div>
-            <h3>Expenses: {expenses.reduce(getSum, 0)} </h3>
-            <h3>Sales: {sales.reduce(getSum, 0)} </h3>
+            <div style={{ display: 'flex', width: '80%', justifyContent: 'space-evenly', margin:'0 auto'}} >
+                <h3>Expenses: {expenses.reduce(getSum, 0)} </h3>
+                <h3>Sales: {sales.reduce(getSum, 0)} </h3>
+            </div>
+            
             <br />
             <br />
             <div className="transactions-container">
