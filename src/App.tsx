@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import './App.css';
 import userContext from './contexts/user-context';
 import Home from './pages/Home';
@@ -25,19 +25,19 @@ function App() {
           <Router>
             <Switch >
               <Route path='/' exact>
-                <Dashboard />
+                {user ? <Dashboard />  : <Home />   }
               </Route>
-              <Route path='/expense' exact>
-                <Expenses />
+              <Route path='/expense' exact>                
+                {user  ? <Expenses />  : <Home />   }
               </Route>
-              <Route path='/sale' exact>
-                <Sales />
+              <Route path='/sale' exact>                
+                {user ? <Sales />  : <Home />   }
               </Route>
               <Route path='/sign-in' exact>
-                <SignIn />
+                {!user ? <SignIn /> : <Dashboard />}
               </Route>
               <Route path='/sign-out'>
-                <SignOut />
+                {user  ? <SignOut />  : <Home />   }
               </Route>
             </Switch>
           </Router>
