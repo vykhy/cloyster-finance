@@ -1,9 +1,11 @@
 import { useState, FormEvent, useContext } from 'react'
-import AppUserContext, { Sale } from '../contexts/app-user-context'
+import { useHistory } from 'react-router'
+import AppUserContext, { SaleType } from '../contexts/app-user-context'
 import { addSale } from '../services/firebase'
 
 export default function Sales() {
 
+    const history = useHistory()
     const appUser = useContext(AppUserContext)
 
     const [projectId, setProjectId] = useState<string>('')
@@ -14,16 +16,18 @@ export default function Sales() {
 
     const handleSubmit = async(e: FormEvent) => {
         e.preventDefault()
-        const sale: Sale = {
+        const sale: SaleType = {
             projectId: projectId,
             customer: customer,
             amount: +amount,
+            weight: +weight,
             type: type,
             createdAt: Date.now()
         }
-        if(appUser?.user?.uid)addSale(appUser?.user?.uid, sale)
+        if(appUser?.user?.uid) addSale(appUser?.user?.uid, sale)
         appUser?.sales.push(sale)
         
+        history.push('/')
     }
 
     return (
@@ -48,7 +52,7 @@ export default function Sales() {
                     />
                 </label>
                 <br />
-                <button type="submit" onClick={(e) => handleSubmit(e)} >Add expense</button>
+                <button type="submit" onClick={(e) => handleSubmit(e)} >Add sale</button>
             </form>
         </div>
     )

@@ -1,7 +1,7 @@
 import { User } from "@firebase/auth";
 import { createContext } from "react";
 
-export interface Sale{
+export interface SaleType{
     id?: string;
     projectId: string;
     customer?: string;
@@ -26,7 +26,7 @@ export interface AppUser {
     user: User
     name: boolean;
     expenses: Array<Expense>;
-    sales: Array<Sale>;
+    sales: Array<SaleType>;
     projects: Array<Project>;
     createdAt: number;
 }

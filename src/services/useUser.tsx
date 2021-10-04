@@ -1,6 +1,4 @@
-import { DocumentData } from '@firebase/firestore';
-import React, { useState, useEffect } from 'react'
-import { AppUser } from '../contexts/app-user-context';
+import { useState, useEffect } from 'react'
 import { getUserData } from './firebase';
 
 export default function useUser(uid: string | null){

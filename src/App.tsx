@@ -18,7 +18,6 @@ function App() {
   const { user } = useAuthListener()
   const appUser = useUser(user?.uid || null)
 
-  console.log(appUser)
   return (
     <userContext.Provider value = { user } >
       <AppUserContext.Provider value = { appUser }>

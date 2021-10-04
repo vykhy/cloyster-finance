@@ -1,9 +1,11 @@
 import { useState, FormEvent, useContext } from 'react'
+import { useHistory } from 'react-router'
 import AppUserContext, { Expense } from '../contexts/app-user-context'
 import { addExpense } from '../services/firebase'
 
 export default function Expenses() {
 
+    const history = useHistory()
     const appUser = useContext(AppUserContext)
 
     const [projectId, setProjectId] = useState<string>('')
@@ -24,7 +26,9 @@ export default function Expenses() {
         }
         if(appUser?.user?.uid)addExpense(appUser?.user?.uid, expense)
         appUser?.expenses.push(expense)
-        
+
+        history.push('/')
+
     }
 
     return (

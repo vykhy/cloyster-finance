@@ -1,6 +1,6 @@
 import { User } from '@firebase/auth'
 import { doc, setDoc, updateDoc, getDoc, arrayUnion } from 'firebase/firestore'
-import { Expense, Sale } from '../contexts/app-user-context'
+import { Expense, SaleType } from '../contexts/app-user-context'
 import { db } from '../lib/firebase'
 
 export async function userExists(uid: string){
@@ -33,7 +33,7 @@ export async function addExpense(uid: string, expense: Expense){
         expenses: arrayUnion(expense)
     })
 }
-export async function addSale(uid: string, sale: Sale){
+export async function addSale(uid: string, sale: SaleType){
     await updateDoc(doc(db,'users', uid), {
         sales: arrayUnion(sale)
     })
