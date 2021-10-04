@@ -29,12 +29,13 @@ export async function getUserData(uid: string){
 }
 
 export async function addExpense(uid: string, expense: Expense){
-    await updateDoc(doc(db,'users', uid), {
+    return await updateDoc(doc(db,'users', uid), {
         expenses: arrayUnion(expense)
     })
+     
 }
 export async function addSale(uid: string, sale: SaleType){
-    await updateDoc(doc(db,'users', uid), {
+    return await updateDoc(doc(db,'users', uid), {
         sales: arrayUnion(sale)
     })
 }

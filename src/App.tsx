@@ -11,10 +11,12 @@ import AppUserContext from './contexts/app-user-context';
 import Dashboard from './pages/Dashboard';
 import Expenses from './pages/Expenses';
 import Sales from './pages/Sales';
+import Header from './components/Header';
+import Navbar from './components/Navbar';
 
 function App() {
 
-  const firebaseapp = firebase
+  const firebaseapp = firebase    //initialize firebase
   const { user } = useAuthListener()
   const appUser = useUser(user?.uid || null)
 
@@ -23,6 +25,8 @@ function App() {
       <AppUserContext.Provider value = { appUser }>
         <div className="App">
           <Router>
+          <Header />
+          <Navbar />
             <Switch >
               <Route path='/' exact>
                 {user ? <Dashboard />  : <Home />   }

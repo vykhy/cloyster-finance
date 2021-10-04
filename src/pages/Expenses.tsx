@@ -7,15 +7,18 @@ export default function Expenses() {
 
     const history = useHistory()
     const appUser = useContext(AppUserContext)
+    const [error, setError] = useState<string | null>(null)
 
     const [projectId, setProjectId] = useState<string>('')
     const [item, setItem] = useState<string>('')
-    const [amount, setAmount] = useState<string | number>('0')
+    const [amount, setAmount] = useState<string | number>('')
     const [reason, setReason] = useState<string>('')
     const type: string = 'expense'
 
     const handleSubmit = async(e: FormEvent) => {
         e.preventDefault()
+        if(!navigator.onLine) {setError('You are offline'); return }
+
         const expense: Expense = {
             projectId: projectId,
             item: item,
@@ -24,10 +27,11 @@ export default function Expenses() {
             type: type,
             createdAt: Date.now()
         }
-        if(appUser?.user?.uid)addExpense(appUser?.user?.uid, expense)
-        appUser?.expenses.push(expense)
-
-        history.push('/')
+        if(appUser?.user.uid){
+            await addExpense(appUser?.user?.uid, expense)
+            appUser?.expenses.push(expense)
+            history.push('/')
+        }       
 
     }
 
@@ -40,21 +44,22 @@ export default function Expenses() {
                 </label>
                 <br />
                 <label>Item: <br />
-                    <input type="text" aria-label="item name" value={item} onChange={(e) =>setItem(e.target.value)}
+                    <input type="text" required aria-label="item name" value={item} onChange={(e) =>setItem(e.target.value)}
                     />
                 </label> <br />
                 <label>Price: <br />
-                    <input type="number" aria-label="amount" value={amount} onChange={(e) => {setAmount(e.target.value)}}
+                    <input type="number" required aria-label="amount" value={amount} onChange={(e) => {setAmount(e.target.value)}}
                     />
                 </label>
                 <br />
-                <label>Reason: <br />
+                <label>Reason(optional): <br />
                     <input type="text" aria-label="reason" value={reason} onChange={(e) =>setReason(e.target.value)}
                     />
                 </label>
                 <br />
                 <button type="submit" onClick={(e) => handleSubmit(e)} >Add expense</button>
             </form>
+            {error &&  <h3>{error} </h3>}
         </div>
     )
 }

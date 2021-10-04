@@ -12,10 +12,13 @@ export default function Sales() {
     const [customer, setCustomer] = useState<string>('')
     const [weight, setWeight] = useState<string>('')
     const [amount, setAmount] = useState<string | number>('')
+    const [error, setError] = useState<string | null>(null)
     const type: string = 'sale'
 
     const handleSubmit = async(e: FormEvent) => {
         e.preventDefault()
+        if(!navigator.onLine) {setError('You are offline'); return }
+
         const sale: SaleType = {
             projectId: projectId,
             customer: customer,
@@ -33,27 +36,28 @@ export default function Sales() {
     return (
         <div>
             <form>
-                <label >Batch: <br />
+                <label >Batch(optional): <br />
                     <input type="text" aria-label="batch" value={projectId} onChange={(e) =>setProjectId(e.target.value)}
                     />
                 </label>
                 <br />
-                <label>Customer: <br />
+                <label>Customer(optional): <br />
                     <input type="text" aria-label="customer name" value={customer} onChange={(e) =>setCustomer(e.target.value)}
                     />
                 </label> <br />
                 <label>Price: <br />
-                    <input type="number" aria-label="amount" value={amount} onChange={(e) => {setAmount(e.target.value)}}
+                    <input type="number" required aria-label="amount" value={amount} onChange={(e) => {setAmount(e.target.value)}}
                     />
                 </label>
                 <br />
-                <label>Weight in kg: <br />
+                <label>Weight in kg(optional): <br />
                     <input type="number" aria-label="amount" value={weight} onChange={(e) => {setWeight(e.target.value)}}
                     />
                 </label>
                 <br />
                 <button type="submit" onClick={(e) => handleSubmit(e)} >Add sale</button>
-            </form>
+            </form>         
+            {error &&  <h3>{error} </h3>}
         </div>
     )
 }
