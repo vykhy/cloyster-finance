@@ -10,6 +10,7 @@ import useUser from './services/useUser';
 import AppUserContext from './contexts/app-user-context';
 import Dashboard from './pages/Dashboard';
 import Expenses from './pages/Expenses';
+import Sales from './pages/Sales';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
   const { user } = useAuthListener()
   const appUser = useUser(user?.uid || null)
 
+  console.log(appUser)
   return (
     <userContext.Provider value = { user } >
       <AppUserContext.Provider value = { appUser }>
@@ -28,6 +30,9 @@ function App() {
               </Route>
               <Route path='/expense' exact>
                 <Expenses />
+              </Route>
+              <Route path='/sale' exact>
+                <Sales />
               </Route>
               <Route path='/sign-in' exact>
                 <SignIn />

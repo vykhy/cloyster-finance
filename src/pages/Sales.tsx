@@ -1,29 +1,28 @@
 import { useState, FormEvent, useContext } from 'react'
-import AppUserContext, { Expense } from '../contexts/app-user-context'
-import { addExpense } from '../services/firebase'
+import AppUserContext, { Sale } from '../contexts/app-user-context'
+import { addSale } from '../services/firebase'
 
-export default function Expenses() {
+export default function Sales() {
 
     const appUser = useContext(AppUserContext)
 
     const [projectId, setProjectId] = useState<string>('')
-    const [item, setItem] = useState<string>('')
-    const [amount, setAmount] = useState<string | number>('0')
-    const [reason, setReason] = useState<string>('')
-    const type: string = 'expense'
+    const [customer, setCustomer] = useState<string>('')
+    const [weight, setWeight] = useState<string>('')
+    const [amount, setAmount] = useState<string | number>('')
+    const type: string = 'sale'
 
     const handleSubmit = async(e: FormEvent) => {
         e.preventDefault()
-        const expense: Expense = {
+        const sale: Sale = {
             projectId: projectId,
-            item: item,
+            customer: customer,
             amount: +amount,
-            reason: reason,
             type: type,
             createdAt: Date.now()
         }
-        if(appUser?.user?.uid)addExpense(appUser?.user?.uid, expense)
-        appUser?.expenses.push(expense)
+        if(appUser?.user?.uid)addSale(appUser?.user?.uid, sale)
+        appUser?.sales.push(sale)
         
     }
 
@@ -35,8 +34,8 @@ export default function Expenses() {
                     />
                 </label>
                 <br />
-                <label>Item: <br />
-                    <input type="text" aria-label="item name" value={item} onChange={(e) =>setItem(e.target.value)}
+                <label>Customer: <br />
+                    <input type="text" aria-label="customer name" value={customer} onChange={(e) =>setCustomer(e.target.value)}
                     />
                 </label> <br />
                 <label>Price: <br />
@@ -44,8 +43,8 @@ export default function Expenses() {
                     />
                 </label>
                 <br />
-                <label>Reason: <br />
-                    <input type="text" aria-label="reason" value={reason} onChange={(e) =>setReason(e.target.value)}
+                <label>Weight in kg: <br />
+                    <input type="number" aria-label="amount" value={weight} onChange={(e) => {setWeight(e.target.value)}}
                     />
                 </label>
                 <br />

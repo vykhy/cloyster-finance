@@ -17,7 +17,7 @@ export default function Dashboard() {
     const [transactions, setTransactions] = useState<any>([])//Array<Transaction | Expense | Sale| undefined>
     const [expenses, setExpenses] = useState<Array<number>>([])
     const [sales, setSales] = useState<Array<number>>([])
-    const [period, setPeriod] = useState<string>('7 days')
+    const [period, setPeriod] = useState<'7 days' | '24 hours' | '28 days' | '6 months'>('24 hours')
 
     useEffect(() => {
         setStats(period, user?.expenses, expenses, setExpenses)
@@ -30,11 +30,13 @@ export default function Dashboard() {
          parentArray: Array<number>,
          setFunction: Function,
         ){
+            let newArray: Array<number> = []
             const timestamp = getTimestamp(period)
-            array?.map(object => {
+            array && array.map(object => {
                 if(object.createdAt > timestamp){
-                    setFunction([...parentArray, object.amount])
+                    newArray.push(object.amount)
                 }
+            setFunction(newArray)
             })
     }
 
@@ -63,7 +65,6 @@ export default function Dashboard() {
         return total + Math.round(num)
     }
 
-    console.log(expenses)
     return (
         <div>
             <h3>Expenses: {expenses.reduce(getSum, 0)} </h3>
