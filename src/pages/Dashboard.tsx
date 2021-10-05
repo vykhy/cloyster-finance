@@ -1,6 +1,8 @@
 import { useState, useContext, useEffect } from 'react'
 import AppUserContext, { Expense, SaleType } from '../contexts/app-user-context'
+import Sale from '../components/Sale'
 import '../styles/table.css'
+import ExpenseRow from '../components/ExpenseRow'
 
 export interface Transaction{
     id: string;
@@ -13,6 +15,10 @@ export interface Transaction{
     createdAt: number;
     type?: string;
 }
+    export function formatDate(time: number){
+        let date = new Date(time)
+        return date.getUTCFullYear()+'/'+date.getMonth()+'/'+date.getDate()
+    }
 
 export default function Dashboard() {
 
@@ -20,13 +26,26 @@ export default function Dashboard() {
     const [transactions, setTransactions] = useState<any>([])//Array<Transaction | Expense | Sale| undefined>
     const [expenses, setExpenses] = useState<Array<number>>([])
     const [sales, setSales] = useState<Array<number>>([])
-    const [period, setPeriod] = useState<'7 days' | '24 hours' | '28 days' | '6 months'>('7 days')
+
+    //for filtering
+    const [batch, setBatch] = useState<string>('all')
+    const [type, setType] = useState<string>('all')
+    const [period, setPeriod] = useState<string>('7 days') //<'7 days' | '24 hours' | '28 days' | '6 months' | 'all'>('7 days')
 
     useEffect(() => {
         setStats(period, user?.expenses, setExpenses)
         setStats(period, user?.sales, setSales)
-        setTransactions(user?.sales.concat(user.expenses))
-    }, [user])
+
+        let timestamp = getTimestamp(period)
+        setTransactions(
+            user?.sales.filter(sale => (
+                sale.createdAt > timestamp  && (type === 'sales' || type === 'all') && (sale.projectId === batch || batch === 'all')           
+            ))
+            .concat(user?.expenses.filter(expense => (
+                expense.createdAt > timestamp  && (type === 'expenses' || type === 'all') && (expense.projectId === batch || batch === 'all' )
+            ))
+        ))
+    }, [user, period, type, batch])
 
     /**
      * 
@@ -55,6 +74,8 @@ export default function Dashboard() {
      */
     function getTimestamp(period: string){
         switch (period) {
+            case '4 hours':
+                return Date.now() - (1000*3600*4)
             case '24 hours':
                 return Date.now() - (1000*3600*24)
             case '7 days':
@@ -78,10 +99,6 @@ export default function Dashboard() {
      * @param time millisecond timestamp value
      * @returns formatted date (yyyy/mm/dd)
      */
-    function formatDate(time: number){
-        let date = new Date(time)
-        return date.getUTCFullYear()+'/'+date.getMonth()+'/'+date.getDate()
-    }
 
     return (
         <div>
@@ -89,8 +106,40 @@ export default function Dashboard() {
                 <h3>Expenses: {expenses.reduce(getSum, 0)} </h3>
                 <h3>Sales: {sales.reduce(getSum, 0)} </h3>
             </div>
-            
+            <div><h3>Total profit: {sales.reduce(getSum, 0) - expenses.reduce(getSum, 0)} </h3></div>
+                
             <br />
+            <div style={{display:'flex', justifyContent:'space-evenly'}}>
+                <div >
+                    <label htmlFor="cars">Choose duration:</label><br />
+                    <select value={period} onChange={(e)=> setPeriod(e.target.value)} name="period" id="period" form="dashboardForm">
+                        <option value="4 hours">last 4 hrs</option>
+                        <option value="24 hours">last 24 hrs</option>
+                        <option value="7 days">last week</option>
+                        <option value="28 days">1 month</option>
+                        <option value="180 days">6 months</option>
+                        <option value="all">all</option>
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="cars">Choose type:</label><br />
+                    <select value={type} onChange={(e)=> setType(e.target.value)} name="type" id="type" form="dashboardForm">
+                        <option value="all">all</option>
+                        <option value="expenses">expenses</option>
+                        <option value="sales">sales</option>
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="cars">Choose batch:</label><br />
+                    <select value={batch} onChange={(e)=> setBatch(e.target.value)} name="period" id="period" form="dashboardForm">
+                        {user?.projects.map(project => (
+                            <option value={project.id}>project.id</option>
+                        )) }
+                        
+                    </select>
+                </div>
+            </div>
+            
             <br />
             <div className="transactions-container">
                 <div style={{ display: 'flex', justifyContent: 'space-between', minWidth:'100%'}} className="transaction-headers">
@@ -100,30 +149,14 @@ export default function Dashboard() {
                     <div className='column'>weight</div>
                     <div className='column'>amount</div>
                     <div className='column'>Date</div>
-                    {/* <div className='column'>type</div>  */}
                 </div>
-                { transactions ? transactions.map((transaction: Transaction) => (
+                {/* sort by date(descending and display transactions) */}
+                { transactions ? transactions.sort((a: Transaction, b: Transaction) => b.createdAt - a.createdAt).map((transaction: Transaction) => (
                     <div className="transaction" key={transaction.createdAt} >
                         {transaction.type === 'sale' ? 
-                        <div style={{ color:'green', display:'flex', justifyContent:'space-between', minWidth:'100%'}}>
-                            <div className='column'>{transaction.projectId}</div>
-                            <div className='column'>{transaction.customer || '---'} </div>
-                            <div className='column'>---</div>
-                            <div className='column'>{transaction.weight} </div>
-                            <div className='column'>{transaction.amount} </div>
-                            <div className='column'>{formatDate(transaction.createdAt)} </div>
-                            {/* <div className='column'>{transaction.type} </div> */}
-                        </div>
+                        <Sale sale={transaction} />
                         : 
-                        <div style={{ color:'red', display:'flex', justifyContent:'space-between', minWidth:'100%'}}>
-                            <div className="column">{transaction.projectId} </div>
-                            <div className="column">---</div>
-                            <div className="column">{transaction.item} </div>
-                            <div className="column">---</div>
-                            <div className="column">{transaction.amount} </div>
-                            <div className="column">{formatDate(transaction.createdAt)}</div>
-                            {/* <div className="column">{transaction.type} </div> */}
-                        </div>
+                        <ExpenseRow expense={transaction} />
                     }
                     </div>
                 )) : <div>nothing</div> }
