@@ -2,18 +2,20 @@ import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { createUser, userExists } from '../services/firebase'
+import { CircularProgress } from '@material-ui/core'
 
 export default function SignIn(): any {
     const [error, setError] = useState<string | null>('Signing you in...')
-
+    const [isFetching, setisFetching] = useState<boolean>(true)
     const history = useHistory()
     
     useEffect(() => {
        handleSignIn()
     }, [])
     
-function handleSignIn(){
-            if(!navigator.onLine) {setError('You are offline'); return }
+    function handleSignIn(){
+        setisFetching(true)
+            if(!navigator.onLine) {setError('You are offline'); setisFetching(false); return }
             const provider = new GoogleAuthProvider()
             const auth = getAuth()
 
@@ -46,6 +48,7 @@ function handleSignIn(){
                 const credential = GoogleAuthProvider.credentialFromError(error);
                 // ...
             });
+            setisFetching(false)
             // signInWithRedirect(auth, provider)
 
             // getRedirectResult(auth) 
@@ -73,7 +76,10 @@ function handleSignIn(){
     
     return (
         <div>
-            <button onClick={handleSignIn} >Sign in with Google</button>
+            <button className="rounded text-lg bg-blue-500 mt-4 text-white w-2/5 mx-auto py-3"
+             onClick={handleSignIn} >
+                {isFetching? <CircularProgress className="text-white" /> : <p>Sign in with Google</p>}
+                 </button>
             {error &&  <h3>{error} </h3>}
         </div>
     )

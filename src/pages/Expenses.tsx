@@ -1,3 +1,4 @@
+import { CircularProgress } from '@material-ui/core'
 import { useState, FormEvent, useContext } from 'react'
 import { useHistory } from 'react-router'
 import AppUserContext, { Expense } from '../contexts/app-user-context'
@@ -8,6 +9,7 @@ export default function Expenses() {
     const history = useHistory()
     const appUser = useContext(AppUserContext)
     const [error, setError] = useState<string | null>(null)
+    const [isFetching, setiIsFetching] = useState(false)
 
     const [projectId, setProjectId] = useState<string>('')
     const [item, setItem] = useState<string>('')
@@ -17,7 +19,8 @@ export default function Expenses() {
 
     const handleSubmit = async(e: FormEvent) => {
         e.preventDefault()
-        if(!navigator.onLine) {setError('You are offline'); return }
+        setiIsFetching(true)
+        if(!navigator.onLine) {setError('You are offline');setiIsFetching(false); return }
 
         const expense: Expense = {
             projectId: projectId,
@@ -29,6 +32,7 @@ export default function Expenses() {
         }
         if(appUser?.user.uid){
             await addExpense(appUser?.user?.uid, expense)
+            setiIsFetching(false)
             appUser?.expenses.push(expense)
             history.push('/')
         }       
@@ -37,27 +41,29 @@ export default function Expenses() {
 
     return (
         <div>
-            <form>
+            <form className="text-lg text-left w-4/5 md:w-64 mx-auto">
                 <label >Batch: <br />
-                    <input type="text" aria-label="batch" value={projectId} onChange={(e) =>setProjectId(e.target.value)}
+                    <input className="w-full border py-1 text-lg"  type="text" aria-label="batch" value={projectId} onChange={(e) =>setProjectId(e.target.value)}
                     />
                 </label>
                 <br />
                 <label>Item: <br />
-                    <input type="text" required aria-label="item name" value={item} onChange={(e) =>setItem(e.target.value)}
+                    <input className="w-full border py-1 text-lg "  type="text" required aria-label="item name" value={item} onChange={(e) =>setItem(e.target.value)}
                     />
                 </label> <br />
                 <label>Price: <br />
-                    <input type="number" required aria-label="amount" value={amount} onChange={(e) => {setAmount(e.target.value)}}
+                    <input className="w-full border py-1 text-lg"  type="number" required aria-label="amount" value={amount} onChange={(e) => {setAmount(e.target.value)}}
                     />
                 </label>
                 <br />
                 <label>Reason(optional): <br />
-                    <input type="text" aria-label="reason" value={reason} onChange={(e) =>setReason(e.target.value)}
+                    <input className="w-full border py-1 text-lg"  type="text" aria-label="reason" value={reason} onChange={(e) =>setReason(e.target.value)}
                     />
                 </label>
                 <br />
-                <button type="submit" onClick={(e) => handleSubmit(e)} >Add expense</button>
+                <button className="bg-blue-500 mx-auto text-white text-lg w-2/4 rounded py-2" type="submit" onClick={(e) => handleSubmit(e)} >
+                    {isFetching ? <CircularProgress style={{color:'white'}} /> : <p>Add expense</p>} 
+                </button>
             </form>
             {error &&  <h3>{error} </h3>}
         </div>
