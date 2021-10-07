@@ -19,7 +19,7 @@ export interface Expense{
     createdAt: number;
     type?: string;
 }
-interface Project{
+export interface Project{
     id: string
 }
 export interface AppUser {

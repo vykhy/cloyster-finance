@@ -1,6 +1,6 @@
 import { User } from '@firebase/auth'
 import { doc, setDoc, updateDoc, getDoc, arrayUnion } from 'firebase/firestore'
-import { Expense, SaleType } from '../contexts/app-user-context'
+import { Expense, Project, SaleType } from '../contexts/app-user-context'
 import { db } from '../lib/firebase'
 
 export async function userExists(uid: string){
@@ -37,5 +37,10 @@ export async function addExpense(uid: string, expense: Expense){
 export async function addSale(uid: string, sale: SaleType){
     return await updateDoc(doc(db,'users', uid), {
         sales: arrayUnion(sale)
+    })
+}
+export async function addBatch(uid: string, project: Project){
+    await updateDoc(doc(db, 'users', uid), {
+        projects: arrayUnion(project)
     })
 }

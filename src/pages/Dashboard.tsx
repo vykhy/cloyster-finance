@@ -23,7 +23,7 @@ export interface Transaction{
      */
     export function formatDate(time: number){
         let date = new Date(time)
-        return date.getUTCFullYear()+'/'+date.getMonth()+'/'+date.getDate()
+        return date.getUTCDate()+'/'+(+date.getUTCMonth()+1)+'/'+date.getUTCFullYear()
     }
 
 export default function Dashboard() {
@@ -73,9 +73,9 @@ export default function Dashboard() {
         ){
             let newArray: Array<number> = []
             const timestamp = getTimestamp(period)
-            //if element passes period filter, add its amount to array
-            array && array.map(object => {
-                if(object.createdAt > timestamp){
+            //if element passes period and batch filter, add its amount to array
+            array && array.forEach(object => {
+                if(object.createdAt > timestamp && (object.projectId === batch || batch === 'all')){
                     newArray.push(object.amount)
                 }
             setFunction(newArray)
@@ -137,8 +137,9 @@ export default function Dashboard() {
                     <label className='text-gray-100 font-bold text-sm'  htmlFor="cars">Choose batch:</label><br />
                     <select className='p-1 rounded px-3 w-28'  value={batch} onChange={(e)=> setBatch(e.target.value)} name="period" id="period" form="dashboardForm">
                         {user?.projects.map(project => (
-                            <option value={project.id}>project.id</option>
+                            <option value={project.id}>{project.id}</option>
                         )) }
+                        <option value='all'>all</option>
                         
                     </select>
                 </div>

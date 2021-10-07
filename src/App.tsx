@@ -9,10 +9,12 @@ import firebase from './lib/firebase';
 import useUser from './services/useUser';
 import AppUserContext from './contexts/app-user-context';
 import Dashboard from './pages/Dashboard';
-import Expenses from './pages/Expenses';
-import Sales from './pages/Sales';
+import NewExpense from './pages/NewExpense';
+import NewSale from './pages/NewSale';
 import Header from './components/Header';
 import Navbar from './components/Navbar';
+import New from './pages/New';
+import NewBatch from './pages/NewBatch';
 
 function App() {
 
@@ -31,11 +33,17 @@ function App() {
               <Route path='/' exact>
                 {user ? <Dashboard />  : <Home />   }
               </Route>
+              <Route path='/new' exact>                
+                {user ? <New />  : <Home />   }
+              </Route>
               <Route path='/expense' exact>                
-                {user  ? <Expenses />  : <Home />   }
+                {user  ? <NewExpense projects={appUser?.projects}/>  : <Home />   }
               </Route>
               <Route path='/sale' exact>                
-                {user ? <Sales />  : <Home />   }
+                {user ? <NewSale projects={appUser?.projects} />  : <Home />   }
+              </Route>
+              <Route path='/batch' exact>                
+                {user ? <NewBatch />  : <Home />   }
               </Route>
               <Route path='/sign-in' exact>
                 {!user ? <SignIn /> : <Dashboard />}

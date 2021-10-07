@@ -10,7 +10,8 @@ export default function SignOut(){
 
     useEffect(() => {
         handleSignOut()
-    }, [])
+    },)
+
     function handleSignOut(){
         const auth = getAuth()
         if(!navigator.onLine) {setError('You are offline'); return }
