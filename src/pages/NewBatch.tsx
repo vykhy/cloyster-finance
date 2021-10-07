@@ -43,7 +43,7 @@ export default function NewBatch() {
 
     return (
         <div>
-            <div className="container mx-auto text-xl font-bold my-3">New Expense</div>
+            <div className="container mx-auto text-xl font-bold my-3">New Batch</div>
             <form className="text-lg text-left w-4/5 md:w-64 mx-auto">
             <label> New Batch name:</label><br />
             <input className="w-full mb-2 border py-1 text-lg"  type="text" aria-label="batch" value={projectId} onChange={(e) =>setProjectId(e.target.value)} />                         
